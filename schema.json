@@ -1,0 +1,15 @@
+{
+  "users": {
+    "id": "int",
+    "name": "string",
+    "age": "int",
+    "city": "string",
+    "balance": "float"
+  },
+  "orders": {
+    "order_id": "int",
+    "user_id": "int",
+    "amount": "float",
+    "status": "string"
+  }
+}

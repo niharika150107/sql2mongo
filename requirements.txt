@@ -1,0 +1,8 @@
+ply
+pytest
+pymongo
+psycopg2-binary
+psycopg
+flask
+gunicorn
+python-dotenv

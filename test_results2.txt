@@ -1,0 +1,61 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.6, pytest-9.0.3, pluggy-1.6.0 -- C:\Users\prana\AppData\Local\Programs\Python\Python312\python.exe
+cachedir: .pytest_cache
+rootdir: D:\SQlmongo\SQL_to_MongoDB_Transpiler-main
+configfile: pyproject.toml
+plugins: anyio-4.2.0
+collecting ... collected 37 items
+
+tests/test_transpiler_full.py::test_select_all PASSED                    [  2%]
+tests/test_transpiler_full.py::test_select_case_insensitivity PASSED     [  5%]
+tests/test_transpiler_full.py::test_select_columns PASSED                [  8%]
+tests/test_transpiler_full.py::test_select_qualified_columns PASSED      [ 10%]
+tests/test_transpiler_full.py::test_where_equality PASSED                [ 13%]
+tests/test_transpiler_full.py::test_where_inequality PASSED              [ 16%]
+tests/test_transpiler_full.py::test_where_greater_less PASSED            [ 18%]
+tests/test_transpiler_full.py::test_where_between PASSED                 [ 21%]
+tests/test_transpiler_full.py::test_where_in_list PASSED                 [ 24%]
+tests/test_transpiler_full.py::test_logical_and PASSED                   [ 27%]
+tests/test_transpiler_full.py::test_logical_or PASSED                    [ 29%]
+tests/test_transpiler_full.py::test_order_by_single PASSED               [ 32%]
+tests/test_transpiler_full.py::test_order_by_multiple PASSED             [ 35%]
+tests/test_transpiler_full.py::test_limit_only PASSED                    [ 37%]
+tests/test_transpiler_full.py::test_order_by_limit_combined PASSED       [ 40%]
+tests/test_transpiler_full.py::test_group_by_single PASSED               [ 43%]
+tests/test_transpiler_full.py::test_group_by_multiple PASSED             [ 45%]
+tests/test_transpiler_full.py::test_count_star PASSED                    [ 48%]
+tests/test_transpiler_full.py::test_count_column PASSED                  [ 51%]
+tests/test_transpiler_full.py::test_multiple_aggregates PASSED           [ 54%]
+tests/test_transpiler_full.py::test_group_by_with_where PASSED           [ 56%]
+tests/test_transpiler_full.py::test_having_clause PASSED                 [ 59%]
+tests/test_transpiler_full.py::test_order_by_group_by PASSED             [ 62%]
+tests/test_transpiler_full.py::test_explicit_join PASSED                 [ 64%]
+tests/test_transpiler_full.py::test_implicit_join PASSED                 [ 67%]
+tests/test_transpiler_full.py::test_join_with_extra_filters PASSED       [ 70%]
+tests/test_transpiler_full.py::test_join_projection PASSED               [ 72%]
+tests/test_transpiler_full.py::test_in_subquery PASSED                   [ 75%]
+tests/test_transpiler_full.py::test_optimizer_or_conversion PASSED       [ 78%]
+tests/test_transpiler_full.py::test_optimizer_range_merge PASSED         [ 81%]
+tests/test_transpiler_full.py::test_error_table_not_found PASSED         [ 83%]
+tests/test_transpiler_full.py::test_error_column_not_found PASSED        [ 86%]
+tests/test_transpiler_full.py::test_error_type_mismatch PASSED           [ 89%]
+tests/test_transpiler_full.py::test_error_invalid_group_by FAILED        [ 91%]
+tests/test_transpiler_full.py::test_error_having_without_group_by PASSED [ 94%]
+tests/test_transpiler_full.py::test_error_join_type_mismatch FAILED      [ 97%]
+tests/test_transpiler_full.py::test_syntax_error PASSED                  [100%]
+
+================================== FAILURES ===================================
+_________________________ test_error_invalid_group_by _________________________
+tests\test_transpiler_full.py:246: in test_error_invalid_group_by
+    with pytest.raises(SemanticError, match="Column 'age' must appear in GROUP BY or be aggregated"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'sql2mongo.semantic.semantic_analyzer.SemanticError'>
+________________________ test_error_join_type_mismatch ________________________
+tests\test_transpiler_full.py:254: in test_error_join_type_mismatch
+    with pytest.raises(SemanticError, match="Type mismatch in JOIN"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE <class 'sql2mongo.semantic.semantic_analyzer.SemanticError'>
+=========================== short test summary info ===========================
+FAILED tests/test_transpiler_full.py::test_error_invalid_group_by - Failed: D...
+FAILED tests/test_transpiler_full.py::test_error_join_type_mismatch - Failed:...
+======================== 2 failed, 35 passed in 0.09s =========================

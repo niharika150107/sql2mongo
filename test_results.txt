@@ -1,0 +1,254 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.6, pytest-9.0.3, pluggy-1.6.0 -- C:\Users\prana\AppData\Local\Programs\Python\Python312\python.exe
+cachedir: .pytest_cache
+rootdir: D:\SQlmongo\SQL_to_MongoDB_Transpiler-main
+configfile: pyproject.toml
+plugins: anyio-4.2.0
+collecting ... collected 31 items
+
+tests/test_transpiler_full.py::test_select_all FAILED                    [  3%]
+tests/test_transpiler_full.py::test_select_case_insensitivity PASSED     [  6%]
+tests/test_transpiler_full.py::test_select_columns FAILED                [  9%]
+tests/test_transpiler_full.py::test_select_qualified_columns PASSED      [ 12%]
+tests/test_transpiler_full.py::test_where_equality PASSED                [ 16%]
+tests/test_transpiler_full.py::test_where_inequality PASSED              [ 19%]
+tests/test_transpiler_full.py::test_where_greater_less PASSED            [ 22%]
+tests/test_transpiler_full.py::test_where_between PASSED                 [ 25%]
+tests/test_transpiler_full.py::test_where_in_list PASSED                 [ 29%]
+tests/test_transpiler_full.py::test_logical_and PASSED                   [ 32%]
+tests/test_transpiler_full.py::test_logical_or PASSED                    [ 35%]
+tests/test_transpiler_full.py::test_logical_nested FAILED                [ 38%]
+tests/test_transpiler_full.py::test_order_by_single PASSED               [ 41%]
+tests/test_transpiler_full.py::test_order_by_multiple PASSED             [ 45%]
+tests/test_transpiler_full.py::test_limit_only PASSED                    [ 48%]
+tests/test_transpiler_full.py::test_order_by_limit_combined PASSED       [ 51%]
+tests/test_transpiler_full.py::test_group_by_single FAILED               [ 54%]
+tests/test_transpiler_full.py::test_group_by_multiple FAILED             [ 58%]
+tests/test_transpiler_full.py::test_count_star FAILED                    [ 61%]
+tests/test_transpiler_full.py::test_count_column FAILED                  [ 64%]
+tests/test_transpiler_full.py::test_multiple_aggregates FAILED           [ 67%]
+tests/test_transpiler_full.py::test_group_by_with_where FAILED           [ 70%]
+tests/test_transpiler_full.py::test_having_clause FAILED                 [ 74%]
+tests/test_transpiler_full.py::test_order_by_group_by FAILED             [ 77%]
+tests/test_transpiler_full.py::test_explicit_join FAILED                 [ 80%]
+tests/test_transpiler_full.py::test_implicit_join FAILED                 [ 83%]
+tests/test_transpiler_full.py::test_join_with_extra_filters FAILED       [ 87%]
+tests/test_transpiler_full.py::test_join_projection FAILED               [ 90%]
+tests/test_transpiler_full.py::test_in_subquery FAILED                   [ 93%]
+tests/test_transpiler_full.py::test_optimizer_or_conversion PASSED       [ 96%]
+tests/test_transpiler_full.py::test_optimizer_range_merge PASSED         [100%]
+
+================================== FAILURES ===================================
+_______________________________ test_select_all _______________________________
+tests\test_transpiler_full.py:48: in test_select_all
+    assert res["string"] == "db.users.find({  })"
+E   AssertionError: assert 'db.users.find({})' == 'db.users.find({  })'
+E     
+E     - db.users.find({  })
+E     ?                --
+E     + db.users.find({})
+_____________________________ test_select_columns _____________________________
+tests\test_transpiler_full.py:57: in test_select_columns
+    assert res["string"] == "db.users.find({  }, { name: 1, age: 1 })"
+E   assert "db.users.fin...1, 'age': 1})" == 'db.users.fin... 1, age: 1 })'
+E     
+E     - db.users.find({  }, { name: 1, age: 1 })
+E     ?                --    ^               -
+E     + db.users.find({}, {'name': 1, 'age': 1})
+E     ?                    ^    +     +   +
+_____________________________ test_logical_nested _____________________________
+tests\test_transpiler_full.py:101: in test_logical_nested
+    res = transpiler("SELECT * FROM users WHERE (age > 18 OR city = 'Delhi') AND name = 'Ravi';")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:36: in transpile
+    ast = parser.parse(sql_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\parser\sql_parser.py:287: in parse
+    return self.parser.parse(data, lexer=self.lexer.lexer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\prana\AppData\Local\Programs\Python\Python312\Lib\site-packages\ply\yacc.py:333: in parse
+    return self.parseopt_notrack(input, lexer, debug, tracking, tokenfunc)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\prana\AppData\Local\Programs\Python\Python312\Lib\site-packages\ply\yacc.py:1201: in parseopt_notrack
+    tok = call_errorfunc(self.errorfunc, errtoken, self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\prana\AppData\Local\Programs\Python\Python312\Lib\site-packages\ply\yacc.py:192: in call_errorfunc
+    r = errorfunc(token)
+        ^^^^^^^^^^^^^^^^
+sql2mongo\parser\sql_parser.py:282: in p_error
+    raise SyntaxError(f"Syntax error at '{p.value}', line {p.lineno}")
+E   SyntaxError: Syntax error at '(', line 1
+____________________________ test_group_by_single _____________________________
+tests\test_transpiler_full.py:126: in test_group_by_single
+    res = transpiler("SELECT city, COUNT(id) FROM users GROUP BY city;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+___________________________ test_group_by_multiple ____________________________
+tests\test_transpiler_full.py:132: in test_group_by_multiple
+    res = transpiler("SELECT city, age, COUNT(id) FROM users GROUP BY city, age;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+_______________________________ test_count_star _______________________________
+tests\test_transpiler_full.py:138: in test_count_star
+    res = transpiler("SELECT city, COUNT(*) FROM users GROUP BY city;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+______________________________ test_count_column ______________________________
+tests\test_transpiler_full.py:144: in test_count_column
+    res = transpiler("SELECT city, COUNT(age) FROM users GROUP BY city;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+__________________________ test_multiple_aggregates ___________________________
+tests\test_transpiler_full.py:152: in test_multiple_aggregates
+    res = transpiler("SELECT city, SUM(balance), AVG(age), MIN(id), MAX(balance) FROM users GROUP BY city;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:37: in transpile
+    analyzer.validate_query(ast)
+sql2mongo\semantic\semantic_analyzer.py:12: in validate_query
+    self.validate_select(ast)
+sql2mongo\semantic\semantic_analyzer.py:39: in validate_select
+    self.validate_columns(node.columns, table_name,node)
+sql2mongo\semantic\semantic_analyzer.py:160: in validate_columns
+    raise SemanticError(f"Duplicate column '{column_name}' in SELECT list")
+E   sql2mongo.semantic.semantic_analyzer.SemanticError: Duplicate column 'balance' in SELECT list
+__________________________ test_group_by_with_where ___________________________
+tests\test_transpiler_full.py:161: in test_group_by_with_where
+    res = transpiler("SELECT city, SUM(balance) FROM users WHERE age > 20 GROUP BY city;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+_____________________________ test_having_clause ______________________________
+tests\test_transpiler_full.py:168: in test_having_clause
+    res = transpiler("SELECT city, SUM(balance) FROM users GROUP BY city HAVING SUM(balance) > 1000;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+___________________________ test_order_by_group_by ____________________________
+tests\test_transpiler_full.py:177: in test_order_by_group_by
+    res = transpiler("SELECT city, SUM(balance) FROM users GROUP BY city ORDER BY SUM(balance) DESC LIMIT 10;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:36: in transpile
+    ast = parser.parse(sql_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\parser\sql_parser.py:287: in parse
+    return self.parser.parse(data, lexer=self.lexer.lexer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\prana\AppData\Local\Programs\Python\Python312\Lib\site-packages\ply\yacc.py:333: in parse
+    return self.parseopt_notrack(input, lexer, debug, tracking, tokenfunc)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\prana\AppData\Local\Programs\Python\Python312\Lib\site-packages\ply\yacc.py:1201: in parseopt_notrack
+    tok = call_errorfunc(self.errorfunc, errtoken, self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\prana\AppData\Local\Programs\Python\Python312\Lib\site-packages\ply\yacc.py:192: in call_errorfunc
+    r = errorfunc(token)
+        ^^^^^^^^^^^^^^^^
+sql2mongo\parser\sql_parser.py:282: in p_error
+    raise SyntaxError(f"Syntax error at '{p.value}', line {p.lineno}")
+E   SyntaxError: Syntax error at 'SUM', line 1
+_____________________________ test_explicit_join ______________________________
+tests\test_transpiler_full.py:186: in test_explicit_join
+    res = transpiler("SELECT users.name, orders.amount FROM users JOIN orders ON users.id = orders.user_id;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+_____________________________ test_implicit_join ______________________________
+tests\test_transpiler_full.py:194: in test_implicit_join
+    res = transpiler("SELECT users.name, orders.amount FROM users, orders WHERE users.id = orders.user_id;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+________________________ test_join_with_extra_filters _________________________
+tests\test_transpiler_full.py:200: in test_join_with_extra_filters
+    res = transpiler("SELECT users.name, orders.amount FROM users JOIN orders ON users.id = orders.user_id WHERE users.age > 20;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+____________________________ test_join_projection _____________________________
+tests\test_transpiler_full.py:207: in test_join_projection
+    res = transpiler("SELECT users.name, orders.amount FROM users JOIN orders ON users.id = orders.user_id;")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+______________________________ test_in_subquery _______________________________
+tests\test_transpiler_full.py:215: in test_in_subquery
+    res = transpiler("SELECT * FROM users WHERE id IN (SELECT user_id FROM orders);")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_transpiler_full.py:40: in transpile
+    optimized_data = optimizer.optimize(mongo_data)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sql2mongo\codegen\optimizer.py:35: in optimize
+    optimized_pipeline = self._optimize_pipeline(mongo_data["pipeline"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MongoOptimizer' object has no attribute '_optimize_pipeline'. Did you mean: '_optimize_filter'?
+=========================== short test summary info ===========================
+FAILED tests/test_transpiler_full.py::test_select_all - AssertionError: asser...
+FAILED tests/test_transpiler_full.py::test_select_columns - assert "db.users....
+FAILED tests/test_transpiler_full.py::test_logical_nested - SyntaxError: Synt...
+FAILED tests/test_transpiler_full.py::test_group_by_single - AttributeError: ...
+FAILED tests/test_transpiler_full.py::test_group_by_multiple - AttributeError...
+FAILED tests/test_transpiler_full.py::test_count_star - AttributeError: 'Mong...
+FAILED tests/test_transpiler_full.py::test_count_column - AttributeError: 'Mo...
+FAILED tests/test_transpiler_full.py::test_multiple_aggregates - sql2mongo.se...
+FAILED tests/test_transpiler_full.py::test_group_by_with_where - AttributeErr...
+FAILED tests/test_transpiler_full.py::test_having_clause - AttributeError: 'M...
+FAILED tests/test_transpiler_full.py::test_order_by_group_by - SyntaxError: S...
+FAILED tests/test_transpiler_full.py::test_explicit_join - AttributeError: 'M...
+FAILED tests/test_transpiler_full.py::test_implicit_join - AttributeError: 'M...
+FAILED tests/test_transpiler_full.py::test_join_with_extra_filters - Attribut...
+FAILED tests/test_transpiler_full.py::test_join_projection - AttributeError: ...
+FAILED tests/test_transpiler_full.py::test_in_subquery - AttributeError: 'Mon...
+======================== 16 failed, 15 passed in 0.28s ========================

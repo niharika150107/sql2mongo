@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sql2mongo"
+version = "0.1.0"
+description = "A CLI tool to transpile SQL to MongoDB Query Language"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "ply",
+    "pymongo",
+    "psycopg2-binary"
+]
+
+[project.scripts]
+sql2mongo = "sql2mongo.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sql2mongo*"]

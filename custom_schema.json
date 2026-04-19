@@ -1,0 +1,11 @@
+{
+    "employees": {
+        "id": "int",
+        "name": "string",
+        "salary": "int"
+    },
+    "projects": {
+        "id": "int",
+        "title": "string"
+    }
+}
