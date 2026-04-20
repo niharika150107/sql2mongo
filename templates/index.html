@@ -868,8 +868,8 @@ function renderMongoResult(paneId, docs, countId) {
     countEl.textContent = '0 docs';
     return;
   }
-
   // Build unified table from keys
+  const flatDocs = docs.map(doc => flattenDoc(doc));
   const keys = [...new Set(docs.flatMap(d => Object.keys(d)))];
   const wrap = document.createElement('div');
   wrap.className = 'result-table-wrap';
@@ -906,6 +906,20 @@ function renderMongoResult(paneId, docs, countId) {
   pane.innerHTML = '';
   pane.appendChild(wrap);
   countEl.textContent = `${docs.length} doc${docs.length !== 1 ? 's' : ''}`;
+}
+
+
+function flattenDoc(doc, prefix = '', result = {}) {
+  for (const key of Object.keys(doc)) {
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+    const val = doc[key];
+    if (val !== null && typeof val === 'object' && !Array.isArray(val)) {
+      flattenDoc(val, fullKey, result);
+    } else {
+      result[fullKey] = val;
+    }
+  }
+  return result;
 }
 
 // ── UTILS ──────────────────────────────────────────────

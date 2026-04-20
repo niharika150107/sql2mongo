@@ -141,7 +141,9 @@ class MongoDBGenerator:
             match = self._generate_filter(node.where)
             pipeline.append({"$match": match})
         #  projection (reuse your logic)
-        projection = {}
+        #projection = {}
+        add_fields = {}
+        clean_projection = {}
         for col in node.columns:
             if isinstance(col, dict):
                 table = col.get("table")
@@ -155,10 +157,12 @@ class MongoDBGenerator:
             else:
                 continue
             if table == join_table:
-                projection[f"{join_table}.{field}"] = 1
+                add_fields[field] = f"${join_table}.{field}"
             else:
-                projection[field] = 1
-        pipeline.append({"$project": projection})
+                clean_projection[field] = 1
+        if add_fields:
+            pipeline.append({"$addFields": add_fields})
+        pipeline.append({"$project": clean_projection})
         return {
             "string": f"db.{base_table}.aggregate({pipeline})",
             "collection": base_table,
