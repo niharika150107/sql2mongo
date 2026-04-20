@@ -293,11 +293,17 @@ class MongoDBGenerator:
             pipeline.append({"$limit": node.limit})
 
         #return f"db.{node.table}.aggregate({pipeline})"
-        return {
+        result = {
                 "string": f"db.{node.table}.aggregate({pipeline})",
                 "collection": node.table,
                 "pipeline": pipeline
                 }
+        if node.order_by:
+            result["sort"] = self._generate_sort(node.order_by)
+        if node.limit is not None:
+            result["limit"] = node.limit
+        return result
+
 
     def _generate_find(self, node: SelectQuery):
         collection = node.table

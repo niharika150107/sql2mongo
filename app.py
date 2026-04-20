@@ -113,16 +113,21 @@ def run_query():
             return jsonify({"error": f"Postgres error: {str(e)}"}), 500
 
         # ── Run Mongo ──────────────────────────────────────
+        # ── Run Mongo ──────────────────────────────────────
         try:
             db = get_mongo_db()
-            if "filter" in mongo_data:
-                mongo_result = run_mongo(
-                    collection,
-                    mongo_data["filter"],
+            if "pipeline" in mongo_data:
+                mongo_result = list(db[collection].aggregate(mongo_data["pipeline"]))
+            else:
+                cursor = db[collection].find(
+                    mongo_data.get("filter", {}),
                     mongo_data.get("projection")
                 )
-            else:
-                mongo_result = list(db[collection].aggregate(mongo_data["pipeline"]))
+                if "sort" in mongo_data:
+                    cursor = cursor.sort(list(mongo_data["sort"].items()))
+                if "limit" in mongo_data:
+                    cursor = cursor.limit(mongo_data["limit"])
+                mongo_result = list(cursor)
         except Exception as e:
             return jsonify({"error": f"Mongo error: {str(e)}"}), 500
 
