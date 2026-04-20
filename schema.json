@@ -4,12 +4,12 @@
     "name": "string",
     "age": "int",
     "city": "string",
-    "balance": "float"
+    "balance": "int"
   },
   "orders": {
     "order_id": "int",
     "user_id": "int",
-    "amount": "float",
+    "amount": "int",
     "status": "string"
   }
 }
