@@ -158,8 +158,8 @@ class MongoDBGenerator:
                 continue
             if table == join_table:
                 add_fields[field] = f"${join_table}.{field}"
-            else:
-                clean_projection[field] = 1
+            
+            clean_projection[field] = 1
         if add_fields:
             pipeline.append({"$addFields": add_fields})
         pipeline.append({"$project": clean_projection})
