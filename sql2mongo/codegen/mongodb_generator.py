@@ -306,6 +306,36 @@ class MongoDBGenerator:
             result["sort"] = self._generate_sort(node.order_by)
         if node.limit is not None:
             result["limit"] = node.limit
+        # $project to rename _id back to group_by column name(s)
+        project_stage = {}
+        if node.group_by:
+            if len(node.group_by) == 1:
+                project_stage[node.group_by[0]] = "$_id"  # city: "$_id"
+            else:
+                for col in node.group_by:
+                    project_stage[col] = f"$_id.{col}"
+        project_stage["_id"] = 0  # hide _id
+
+        # also expose aggregate fields
+        for col in node.columns:
+            if isinstance(col, Aggregate):
+                func = col.func
+                column = col.column
+                if func == "COUNT":
+                    if column == "*":
+                        project_stage["count"] = 1
+                    else:
+                        project_stage[f"count_{column}"] = 1
+                elif func in ["MIN", "MAX", "AVG", "SUM"]:
+                    project_stage[f"{func.lower()}_{column}"] = 1
+
+        pipeline.append({"$project": project_stage})
+
+        return {
+            "string": f"db.{node.table}.aggregate({pipeline})",
+            "collection": node.table,
+            "pipeline": pipeline
+        }
         return result
 
 
